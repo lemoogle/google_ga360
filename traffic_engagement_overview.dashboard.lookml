@@ -1188,7 +1188,7 @@
   - name: Date
     title: Date
     type: date_filter
-    default_value: '2013-09-10 00:00:00'
+    default_value: '2017-09-10 00:00:00'
     model:
     explore:
     field:

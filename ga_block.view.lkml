@@ -631,8 +631,11 @@ view: contentInfo_base {
 
 view: hits_customDimensions_base {
   extension: required
-  dimension: index {}
+  dimension: index {
+  }
   dimension: value {}
+
+
 }
 
 view: hits_customMetrics_base {
