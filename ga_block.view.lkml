@@ -631,8 +631,21 @@ view: contentInfo_base {
 
 view: hits_customDimensions_base {
   extension: required
-  dimension: index {}
+  dimension: index {
+  }
   dimension: value {}
+
+  dimension: user_id {
+    type: string
+    sql: IF(${index}=2,
+          ${value},
+          NULL) ;;
+  }
+  measure: unique_loggedin_users {
+    type: count_distinct
+    sql: ${user_id} ;;
+
+  }
 }
 
 view: hits_customMetrics_base {
