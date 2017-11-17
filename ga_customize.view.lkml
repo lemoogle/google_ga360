@@ -78,7 +78,8 @@ view: ga_sessions {
 
   measure: identification_rate {
     type: number
-    sql: 1.0*${total_identified_users}/${total_visitors} ;;
+    value_format_name: percent_1
+    sql: 1.0*${total_identified_users}/${unique_visitors} ;;
   }
 
   # If you have custom dimensions on sessions, declare them here.
@@ -192,7 +193,7 @@ view: hits_customDimensions {
 
   dimension: is_identified {
     type: yesno
-    sql: ${user_id} IS NOT NULL and ${user_id}<>'undefined' and ${user_id}<>true ;;
+    sql: ${user_id} IS NOT NULL and ${user_id}<>'undefined' and ${user_id}<>'true' ;;
   }
   measure: unique_loggedin_users {
     type: count_distinct
