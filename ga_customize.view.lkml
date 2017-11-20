@@ -4,6 +4,8 @@ explore: ga_sessions_block {
   extends: [ga_sessions_base]
   extension: required
 
+
+
   always_filter: {
     filters: {
       field: ga_sessions.partition_date
@@ -44,6 +46,41 @@ view: ga_sessions {
 
 
   sql_table_name: `43786551.ga_sessions_*` ;;
+
+
+  parameter: site {
+    hidden: yes
+    type: number
+    allowed_value: {
+      label: "mandmdirect.com"
+      value: "43786551"
+    }
+    allowed_value: {
+      label: "mandmdirect.de"
+      value: "43787040"
+    }
+    allowed_value: {
+      label: "mandmdirect.nl"
+      value: "82755245"
+    }
+    allowed_value: {
+      label: "mandmdirect.dk"
+      value: "43786178"
+    }
+    allowed_value: {
+      value: "43786097"
+      label: "mandmdirect.ie"
+    }
+    allowed_value: {
+      value: "43786092"
+      label: "mandmdirect.fr"
+    }
+    allowed_value: {
+      value: "160971340"
+      label: "mandmdirect.dk2?"
+    }
+    default_value: "43786551"
+  }
   measure: firstvisit {
     type: min
     sql: ${visitStart_raw} ;;

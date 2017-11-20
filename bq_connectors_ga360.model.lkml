@@ -19,7 +19,12 @@ LIMIT 1 ;;
 }
 explore: ga_sessions {
   extends: [ga_sessions_block]
-
+  # always_filter: {
+  #   filters: {
+  #     field: site
+  #     value: "43786551"
+  #   }
+  # }
   join: user_facts {
     relationship: many_to_one
     sql_on: ${hits_customDimensions.user_id}=${user_facts.user_id} ;;
