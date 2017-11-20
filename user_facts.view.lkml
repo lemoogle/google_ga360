@@ -3,7 +3,8 @@ view: user_facts {
 
 
   derived_table: {
-    persist_for: "24 hours"
+    datagroup_trigger: default
+    #persist_for: "24 hours"
     explore_source: ga_sessions{
        filters: {
          field: ga_sessions.partition_date
