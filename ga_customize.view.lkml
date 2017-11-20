@@ -18,7 +18,7 @@ explore: ga_sessions_block {
     view_label: "MandM Dimensions"
     required_joins: [hits]
     from: mandm_custom_dims
-    fields: [user_id]
+
     sql: LEFT JOIN UNNEST(hits.customDimensions) as mandm_user_id ON mandm_user_id.index=2 ;;
   }
 
@@ -29,6 +29,12 @@ view: mandm_custom_dims {
   dimension: user_id {
     sql: ${TABLE}.value ;;
   }
+
+  dimension: is_identified {
+    type: yesno
+    sql: ${user_id} IS NOT NULL and ${user_id}<>'undefined' and ${user_id}<>'true' ;;
+  }
+
 }
 
 
@@ -40,7 +46,16 @@ view: ga_sessions {
   sql_table_name: `43786551.ga_sessions_*` ;;
   measure: firstvisit {
     type: min
-    sql: ${visitStart_date} ;;
+    sql: ${visitStart_raw} ;;
+  }
+
+  measure: firsttransaction{
+    type: min
+    sql: ${visitStart_raw} ;;
+    filters: {
+      field: has_transaction
+      value: "yes"
+    }
   }
   dimension: block_name {
     type: string
@@ -59,34 +74,51 @@ view: ga_sessions {
 
   dimension: days_since_firstvisit {
     type: number
-    sql: DATEDIFF('days',${partition_date},${user_facts.first_visit_date}) ;;
+    sql: DATE_DIFF(${visitStart_date},${user_facts.first_visit_date},DAY) ;;
   }
 
   dimension: months_since_firstvisit {
     type: number
-    sql: DATEDIFF('months',${partition_date},${user_facts.first_visit_date}) ;;
+    sql: DATE_DIFF(${visitStart_date},${user_facts.first_visit_date},MONTH) ;;
   }
 
-  measure: total_identified_users {
-    type: count_distinct
-    sql: ${fullVisitorId} ;;
+  dimension: days_since_firstpurchase {
+    type: number
+    sql: DATE_DIFF(${visitStart_date},${user_facts.first_visit_date},DAY) ;;
+  }
+
+  dimension: months_since_firstpurchase {
+    type: number
+    sql: DATE_DIFF(${visitStart_date},${user_facts.first_visit_date},MONTH) ;;
+  }
+
+  measure: total_identified_sessions {
+    type: count
     filters: {
-      field: hits_customDimensions.is_identified
+      field: is_identified
       value: "yes"
     }
   }
 
+
+  dimension: is_identified {
+    type: yesno
+    sql: ${new_user_id} IS NOT NULL and ${new_user_id}<>'undefined' and ${new_user_id}<>'true' ;;
+  }
+
+
+
   measure: identification_rate {
     type: number
     value_format_name: percent_1
-    sql: 1.0*${total_identified_users}/${unique_visitors} ;;
+    sql: 1.0*${total_identified_sessions}/${session_count} ;;
   }
 
   # If you have custom dimensions on sessions, declare them here.
 
-  # dimension: custom_dimension_2 {
-  #   sql: (SELECT value FROM UNNEST(${TABLE}.customdimensions) WHERE index=2) ;;
-  # }
+  dimension: new_user_id {
+    sql: (SELECT value FROM UNNEST(${TABLE}.customdimensions) WHERE index=2) ;;
+  }
 
 
   # dimension: custom_dimension_2 {
@@ -191,10 +223,7 @@ view: hits_customDimensions {
           NULL) ;;
   }
 
-  dimension: is_identified {
-    type: yesno
-    sql: ${user_id} IS NOT NULL and ${user_id}<>'undefined' and ${user_id}<>'true' ;;
-  }
+
   measure: unique_loggedin_users {
     type: count_distinct
     sql: ${user_id} ;;

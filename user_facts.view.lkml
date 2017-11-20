@@ -9,8 +9,12 @@ view: user_facts {
          field: ga_sessions.partition_date
          value: ""
        }
+      filters: {
+        field: ga_sessions.is_identified
+        value: "yes"
+      }
       column: user_id  {
-        field:hits_customDimensions.user_id
+        field:ga_sessions.new_user_id
       }
 
       column: lifetime_value {
@@ -19,6 +23,10 @@ view: user_facts {
 
       column: first_visit {
         field: ga_sessions.firstvisit
+      }
+
+      column: first_purchase {
+        field: ga_sessions.firsttransaction
       }
 
       column: transaction_count {
@@ -40,10 +48,24 @@ view: user_facts {
   }
 
   dimension:lifetime_value{hidden:yes}
-  dimension: user_id {hidden:no}
+  dimension: user_id {hidden:no
+    primary_key:yes}
+  dimension: first_visit_str {
+    type: string
+    hidden: yes
+    sql: ${TABLE}.first_visit ;;
+
+  }
+
   dimension_group: first_visit {
     type: time
     sql: ${TABLE}.first_visit ;;
+    timeframes: [date,month,year]
+  }
+
+  dimension_group: first_purchase {
+    type: time
+    sql: ${TABLE}.first_purchase ;;
     timeframes: [date,month,year]
   }
   dimension: transaction_count {hidden:yes}
@@ -83,6 +105,11 @@ view: user_facts {
   measure: total_visit_count {
     type: sum
     sql: ${visit_count} ;;
+  }
+
+
+  measure: count {
+    type: count
   }
 
 
