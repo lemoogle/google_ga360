@@ -1,8 +1,5 @@
-explore: crm_data {
-}
-
 view: crm_data {
-  sql_table_name: `43786551`.CRM_data
+  sql_table_name: `43786551`.CRM_Data_2
     ;;
 
   dimension: customer_group {
@@ -47,7 +44,15 @@ view: crm_data {
 
   dimension: postal_district {
     type: string
-    sql: ${TABLE}.Postal_District ;;
+    sql: CASE WHEN ${TABLE}.Postal_District LIKE '%!%' THEN NULL ELSE ${TABLE}.Postal_District END  ;;
+  }
+
+  dimension: postcode_area {
+    type: string
+    sql: UPPER(
+      CASE WHEN REGEXP_CONTAINS(SUBSTR(${postal_district}, 1, 2), "^*[0-9]") THEN SUBSTR(${postal_district}, 1, 1)
+      ELSE SUBSTR(${postal_district}, 1, 2) END)  ;;
+    map_layer_name: uk_postcode_areas
   }
 
   dimension: total_fin_qtyrefunded {

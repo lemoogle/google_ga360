@@ -27,8 +27,16 @@ explore: ga_sessions {
   # }
   join: user_facts {
     relationship: many_to_one
-    sql_on: ${hits_customDimensions.user_id}=${user_facts.user_id} ;;
+    sql_on: ${ga_sessions.new_user_id}=${user_facts.user_id} ;;
   }
+
 }
 
-explore: user_facts {}
+explore: crm_data {
+
+  join: user_facts {
+    relationship: many_to_one
+    sql_on: ${crm_data.latest_google_id}=${user_facts.user_id};;
+  }
+
+}

@@ -14,29 +14,6 @@ explore: ga_sessions_block {
    }
   }
 
-
-  join: mandm_user_id {
-    relationship: many_to_one
-    view_label: "MandM Dimensions"
-    required_joins: [hits]
-    from: mandm_custom_dims
-
-    sql: LEFT JOIN UNNEST(hits.customDimensions) as mandm_user_id ON mandm_user_id.index=2 ;;
-  }
-
-}
-
-view: mandm_custom_dims {
-
-  dimension: user_id {
-    sql: ${TABLE}.value ;;
-  }
-
-  dimension: is_identified {
-    type: yesno
-    sql: ${user_id} IS NOT NULL and ${user_id}<>'undefined' and ${user_id}<>'true' ;;
-  }
-
 }
 
 
@@ -46,7 +23,6 @@ view: ga_sessions {
 
 
   sql_table_name: `43786551.ga_sessions_*` ;;
-
 
   parameter: site {
     hidden: yes
@@ -236,7 +212,6 @@ view: hits_social {
   dimension: socialInteractionNetworkAction {hidden: yes}
 }
 
-
 view: hits_appInfo {
   extends: [hits_appInfo_base]
 }
@@ -252,20 +227,6 @@ view: hits_eventInfo {
 
 view: hits_customDimensions {
   extends: [hits_customDimensions_base]
-
-  dimension: user_id {
-    type: string
-    sql: IF(${index}=2,
-          ${value},
-          NULL) ;;
-  }
-
-
-  measure: unique_loggedin_users {
-    type: count_distinct
-    sql: ${user_id} ;;
-
-  }
 }
 
 view: hits_customVariables {

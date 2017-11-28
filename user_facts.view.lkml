@@ -95,12 +95,12 @@ view: user_facts {
 
   measure: average_transaction_revenue {
     type: number
-    sql: ${total_lifetime_value}/${total_transaction_count} ;;
+    sql: ${total_lifetime_value}/NULLIF(${total_transaction_count},0) ;;
   }
 
   measure: average_visit_revenue {
     type: number
-    sql: ${total_lifetime_value}/${total_visit_count} ;;
+    sql: ${total_lifetime_value}/NULLIF(${total_visit_count}) ;;
   }
 
   measure: total_visit_count {
