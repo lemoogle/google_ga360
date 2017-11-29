@@ -1,4 +1,4 @@
-view: crm_data_copy {
+view: crm_data {
   sql_table_name: `43786551`.CRM_Data_2
     ;;
 
@@ -13,7 +13,7 @@ view: crm_data_copy {
   }
 
   dimension: last_order_cust_core {
-    type: date
+    type: number
     sql: ${TABLE}.Last_Order_Cust_Core ;;
   }
 
@@ -23,14 +23,13 @@ view: crm_data_copy {
   }
 
   dimension: last_visit_date {
-    type: date
+    type: number
     sql: ${TABLE}.Last_Visit_Date ;;
   }
 
   dimension: latest_google_id {
     type: string
     sql: ${TABLE}.Latest_GoogleID ;;
-    primary_key: yes
   }
 
   dimension: number_of_visits {
@@ -45,7 +44,15 @@ view: crm_data_copy {
 
   dimension: postal_district {
     type: string
-    sql: ${TABLE}.Postal_District ;;
+    sql: CASE WHEN ${TABLE}.Postal_District LIKE '%!%' THEN NULL ELSE ${TABLE}.Postal_District END  ;;
+  }
+
+  dimension: postcode_area {
+    type: string
+    sql: UPPER(
+      CASE WHEN REGEXP_CONTAINS(SUBSTR(${postal_district}, 1, 2), "^*[0-9]") THEN SUBSTR(${postal_district}, 1, 1)
+      ELSE SUBSTR(${postal_district}, 1, 2) END)  ;;
+    map_layer_name: uk_postcode_areas
   }
 
   dimension: total_fin_qtyrefunded {
@@ -72,4 +79,10 @@ view: crm_data_copy {
     type: count
     drill_fields: []
   }
+
+  measure: unique_users {
+    type: count_distinct
+    sql: ${latest_google_id} ;;
+  }
+
 }

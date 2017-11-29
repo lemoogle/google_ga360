@@ -3,14 +3,19 @@ view: user_facts {
 
 
   derived_table: {
+    datagroup_trigger: default
     #persist_for: "24 hours"
     explore_source: ga_sessions{
        filters: {
          field: ga_sessions.partition_date
          value: ""
        }
+      filters: {
+        field: ga_sessions.is_identified
+        value: "yes"
+      }
       column: user_id  {
-        field:hits_customDimensions.user_id
+        field:ga_sessions.new_user_id
       }
 
       column: lifetime_value {
@@ -19,6 +24,10 @@ view: user_facts {
 
       column: first_visit {
         field: ga_sessions.firstvisit
+      }
+
+      column: first_purchase {
+        field: ga_sessions.firsttransaction
       }
 
       column: transaction_count {
@@ -40,10 +49,24 @@ view: user_facts {
   }
 
   dimension:lifetime_value{hidden:yes}
-  dimension: user_id {hidden:no}
+  dimension: user_id {hidden:no
+    primary_key:yes}
+  dimension: first_visit_str {
+    type: string
+    hidden: yes
+    sql: ${TABLE}.first_visit ;;
+
+  }
+
   dimension_group: first_visit {
     type: time
     sql: ${TABLE}.first_visit ;;
+    timeframes: [date,month,year]
+  }
+
+  dimension_group: first_purchase {
+    type: time
+    sql: ${TABLE}.first_purchase ;;
     timeframes: [date,month,year]
   }
   dimension: transaction_count {hidden:yes}
@@ -55,6 +78,7 @@ view: user_facts {
 
   measure: total_lifetime_value {
     type: sum
+    value_format_name: gbp_0
     sql: ${lifetime_value} ;;
   }
   measure: total_transaction_count {
@@ -72,12 +96,15 @@ view: user_facts {
 
   measure: average_transaction_revenue {
     type: number
-    sql: ${total_lifetime_value}/${total_transaction_count} ;;
+    value_format_name: gbp_0
+    sql: ${total_lifetime_value}/NULLIF(${total_transaction_count},0) ;;
   }
 
   measure: average_visit_revenue {
     type: number
-    sql: ${total_lifetime_value}/${total_visit_count} ;;
+    value_format_name: gbp_0
+
+    sql: ${total_lifetime_value}/NULLIF(${total_visit_count}) ;;
   }
 
   measure: total_visit_count {
@@ -85,73 +112,10 @@ view: user_facts {
     sql: ${visit_count} ;;
   }
 
-  # # You can specify the table name if it's different from the view name:
-  # sql_table_name: my_schema_name.tester ;;
-  #
-  # # Define your dimensions and measures here, like this:
-  # dimension: user_id {
-  #   description: "Unique ID for each user that has ordered"
-  #   type: number
-  #   sql: ${TABLE}.user_id ;;
-  # }
-  #
-  # dimension: lifetime_orders {
-  #   description: "The total number of orders for each user"
-  #   type: number
-  #   sql: ${TABLE}.lifetime_orders ;;
-  # }
-  #
-  # dimension_group: most_recent_purchase {
-  #   description: "The date when each user last ordered"
-  #   type: time
-  #   timeframes: [date, week, month, year]
-  #   sql: ${TABLE}.most_recent_purchase_at ;;
-  # }
-  #
-  # measure: total_lifetime_orders {
-  #   description: "Use this for counting lifetime orders across many users"
-  #   type: sum
-  #   sql: ${lifetime_orders} ;;
-  # }
+
+  measure: count {
+    type: count
+  }
+
+
 }
-
-# view: user_facts {
-#   # Or, you could make this view a derived table, like this:
-#   derived_table: {
-#     sql: SELECT
-#         user_id as user_id
-#         , COUNT(*) as lifetime_orders
-#         , MAX(orders.created_at) as most_recent_purchase_at
-#       FROM orders
-#       GROUP BY user_id
-#       ;;
-#   }
-#
-#   # Define your dimensions and measures here, like this:
-#   dimension: user_id {
-#     description: "Unique ID for each user that has ordered"
-#     type: number
-#     sql: ${TABLE}.user_id ;;
-#   }
-#
-#   dimension: lifetime_orders {
-#     description: "The total number of orders for each user"
-#     type: number
-#     sql: ${TABLE}.lifetime_orders ;;
-#   }
-#
-#   dimension_group: most_recent_purchase {
-#     description: "The date when each user last ordered"
-#     type: time
-#     timeframes: [date, week, month, year]
-#     sql: ${TABLE}.most_recent_purchase_at ;;
-#   }
-#
-#   measure: total_lifetime_orders {
-#     description: "Use this for counting lifetime orders across many users"
-#     type: sum
-#     sql: ${lifetime_orders} ;;
-#   }
-
-
-# }

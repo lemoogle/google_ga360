@@ -1,4 +1,3 @@
-
 view: ga_sessions_base {
   extension: required
   dimension: partition_date {
@@ -37,14 +36,26 @@ view: ga_sessions_base {
     label: "Visit Start Seconds"
     type: date
     sql: TIMESTAMP_SECONDS(${TABLE}.visitStarttime) ;;
-    hidden: yes
+    hidden: no
   }
   dimension_group: visitStart {
-    timeframes: [date,day_of_week,fiscal_quarter,week,month,year,month_name,month_num,week_of_year]
+    timeframes: [date,day_of_week,fiscal_quarter,week,month,year,month_name,month_num,week_of_year,raw,time_of_day,hour_of_day]
     label: "Visit Start"
     type: time
-    sql: (TIMESTAMP(${visitStartSeconds})) ;;
+    sql: TIMESTAMP_SECONDS(${TABLE}.visitStarttime) ;;
   }
+
+  dimension_group: visitStartweek {
+    hidden: no
+    type: time
+    timeframes: [week, week_of_year,year]
+    sql: CAST( ${visitStart_week} AS DATE ) ;;
+  }
+
+
+
+
+
   ## use visit or hit start time instead
   dimension: date {
     hidden: yes
@@ -227,7 +238,7 @@ view: totals_base {
     label: "Transaction Revenue Total"
     type: sum
     sql: (${TABLE}.transactionRevenue/1000000) ;;
-    value_format_name: usd_0
+    value_format_name: gbp_0
   }
   measure: newVisits_total {
     label: "New Visits Total"
