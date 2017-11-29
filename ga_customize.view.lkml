@@ -80,6 +80,8 @@ view: ga_sessions {
     # }
   }
 
+
+  dimension: channel_group{}
   dimension: has_transaction {
     type: yesno
     sql: ${totals.transactions}>0 ;;

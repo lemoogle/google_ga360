@@ -78,6 +78,7 @@ view: user_facts {
 
   measure: total_lifetime_value {
     type: sum
+    value_format_name: gbp_0
     sql: ${lifetime_value} ;;
   }
   measure: total_transaction_count {
@@ -95,11 +96,14 @@ view: user_facts {
 
   measure: average_transaction_revenue {
     type: number
+    value_format_name: gbp_0
     sql: ${total_lifetime_value}/NULLIF(${total_transaction_count},0) ;;
   }
 
   measure: average_visit_revenue {
     type: number
+    value_format_name: gbp_0
+
     sql: ${total_lifetime_value}/NULLIF(${total_visit_count}) ;;
   }
 

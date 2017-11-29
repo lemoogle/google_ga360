@@ -30,13 +30,17 @@ explore: ga_sessions {
     sql_on: ${ga_sessions.new_user_id}=${user_facts.user_id} ;;
   }
 
+  join: crm_data {
+    relationship: many_to_one
+    sql_on: ${ga_sessions.new_user_id}=${crm_data.latest_google_id} ;;
+  }
+
 }
 
 explore: crm_data {
 
   join: user_facts {
-    relationship: many_to_one
-    sql_on: ${crm_data.latest_google_id}=${user_facts.user_id};;
+    relationship: one_to_one
+    sql_on: ${user_facts.user_id}=${crm_data.latest_google_id} ;;
   }
-
 }

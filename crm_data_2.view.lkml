@@ -1,4 +1,4 @@
-view: crm_data {
+view: crm_data_2 {
   sql_table_name: `43786551`.CRM_Data_2
     ;;
 
@@ -44,15 +44,7 @@ view: crm_data {
 
   dimension: postal_district {
     type: string
-    sql: CASE WHEN ${TABLE}.Postal_District LIKE '%!%' THEN NULL ELSE ${TABLE}.Postal_District END  ;;
-  }
-
-  dimension: postcode_area {
-    type: string
-    sql: UPPER(
-      CASE WHEN REGEXP_CONTAINS(SUBSTR(${postal_district}, 1, 2), "^*[0-9]") THEN SUBSTR(${postal_district}, 1, 1)
-      ELSE SUBSTR(${postal_district}, 1, 2) END)  ;;
-    map_layer_name: uk_postcode_areas
+    sql: ${TABLE}.Postal_District ;;
   }
 
   dimension: total_fin_qtyrefunded {
@@ -79,10 +71,4 @@ view: crm_data {
     type: count
     drill_fields: []
   }
-
-  measure: unique_users {
-    type: count_distinct
-    sql: ${latest_google_id} ;;
-  }
-
 }
