@@ -49,7 +49,7 @@ view: ga_sessions_base {
     hidden: no
     type: time
     timeframes: [week, week_of_year,year]
-    sql: CAST( ${visitStart_week} AS DATE ) ;;
+    sql: ${visitStart_raw} ;;
   }
 
 
@@ -228,11 +228,6 @@ view: totals_base {
   measure: transactions_count {
     type: sum
     sql: ${TABLE}.transactions ;;
-  }
-  measure: conversion_rate {
-    type: number
-    value_format: "0.00%"
-    sql: ${transactions_count}/${visits_total};;
   }
   measure: transactionRevenue_total {
     label: "Transaction Revenue Total"
