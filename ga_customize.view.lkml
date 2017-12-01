@@ -22,7 +22,7 @@ view: ga_sessions {
   # The SQL_TABLE_NAME must be replaced here for date partitioned queries to work properly.
 
 
-  sql_table_name: `43786092.ga_realtime_sessions_2*` ;;
+  sql_table_name: `43786092.ga_sessions_*` ;;
 
   parameter: site {
     hidden: yes
