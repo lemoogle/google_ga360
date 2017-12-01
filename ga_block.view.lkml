@@ -52,10 +52,6 @@ view: ga_sessions_base {
     sql: ${visitStart_raw} ;;
   }
 
-
-
-
-
   ## use visit or hit start time instead
   dimension: date {
     hidden: yes

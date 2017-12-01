@@ -53,7 +53,7 @@ view: ga_sessions {
     }
     allowed_value: {
       value: "160971340"
-      label: "mandmdirect.dk2?"
+      label: "mandmdirect.rollup"
     }
     default_value: "43786551"
   }
@@ -75,6 +75,30 @@ view: ga_sessions {
     value_format: "0.00%"
     sql: ${totals.transactions_count}/${totals.visits_total};;
   }
+
+  measure: visits_total_last_year {
+     type: count
+    filters: {
+      field: visitStart_date
+      value: "last year"
+    }
+  }
+  measure: visits_total_this_year {
+    type: count
+    filters: {
+      field: visitStart_date
+      value: "this year"
+    }
+  }
+
+  dimension_group: test {
+    hidden: yes
+    type: time
+    timeframes: [raw, date]
+    sql: TIMESTAMP_SECONDS(ga_sessions.visitStarttime) ;;
+  }
+
+
   dimension: block_name {
     type: string
     sql: "Google Analytics" ;;
@@ -87,44 +111,6 @@ view: ga_sessions {
 
   dimension: UK_master_channel_group{
     type: string
-#     sql:    if((channelGrouping LIKE "Affiliates" or (${trafficSource.source} like "hotukdeals.com" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "shopstyle.co.uk" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "topcashback.co.uk" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "quidco.com" and ${trafficSource.medium} like "referral")or (${trafficSource.source} like "bargainbuysforbusymums.co.uk" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "%voucher%" and ${trafficSource.medium} like "%voucher%") or (${trafficSource.source} like "lovefashionsales.com" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "lovesales.com" and ${trafficSource.medium} like "referral") or ${hits_page.pagePath} like "%affiliatewindow%" or ${hits_page.pagePath} like "%AW1%" or ${hits_page.pagePath} like "%AW2%" or ${hits_page.pagePath} like "%awin%" or ${hits_page.pagePath} like "%shopzilla%" or ${trafficSource.source} like "%ministryofdeals%" or ${trafficSource.source} like "%shopstyle%" or ${trafficSource.source} like "%thesolesupplier%" or ${trafficSource.source} like "%rewardgateway.co.uk%" or ${trafficSource.source} like "%trainerbargain.com%") and (${trafficSource.source} not like "%Blogger%" or ${trafficSource.source} not like "%blogger%"), "Affiliates",
-# # Organic Search - Google
-#     if((channelGrouping like "Organic Search" or ${trafficSource.source} like "com.google.android.googlequicksearchbox") and ${trafficSource.source} like "%google%", "Organic Search - Google",
-# # Organic Search - Any Other
-#     if((channelGrouping like "Organic Search" or ${trafficSource.source} like "%duckduckgo%") and ((${trafficSource.source} like "%bing%" and ${trafficSource.medium} like "%bing%") or (${trafficSource.source} like "%yahoo%" and ${trafficSource.medium} like "%yahoo%") or (${trafficSource.source} like "%duckduckgo.com%" and ${trafficSource.medium} like "%referral%") or (${trafficSource.source} like "%ask%" and ${trafficSource.medium} like "%organic%") or (${trafficSource.source} like "%aol%" and ${trafficSource.medium} like "%organic%") or (${trafficSource.source} like "%yandex%" and ${trafficSource.medium} like "%organic%")), "Organic Search - Any Other",
-# # Social - Remarketing
-#     if(((${trafficSource.source} like "facebook" and ${trafficSource.medium} like "%cpc%") or (${trafficSource.source} like "%facebook+instagram%" and ${trafficSource.medium} like "%cpc%")) and (${trafficSource.campaign} like "%DPA%" or ${trafficSource.campaign} like "%Re-engagement - Automated Ad%"), "Social - Remarketing",
-# # Social - Prospecting
-#     if((((${trafficSource.source} like "facebook" and ${trafficSource.medium} like "%cpc%") or (${trafficSource.source} like "%facebook+instagram%" and ${trafficSource.medium} like "%cpc%")) and ${trafficSource.campaign} like "%prospecting%"), "Social - Prospecting",
-# # PPC - Branded
-#     IF((channelGrouping like "Paid Search" and ${trafficSource.campaign} like "%Branded%"), "PPC - Branded",
-# # PPC - PLAs
-#     IF((channelGrouping like "Paid Search" and ${trafficSource.campaign} like "%Product Listing Ad%"), "PPC - PLAs",
-# # PPC - Generic
-#     IF(channelGrouping like "Paid Search" and (${trafficSource.campaign} like "%Brand Products%" or ${trafficSource.campaign} like "%Products%" or ${trafficSource.campaign} like "%DSA%" or ${trafficSource.campaign} like "%Competitors%"), "PPC - Generic",
-# # Youtube - Remarketing
-#     if((${trafficSource.campaign} like "RemarketingYT"), "Youtube - Remarketing",
-# # Youtube - Prospecting
-#     if((${trafficSource.campaign} like "ProspectingYT"), "Youtube - Prospecting",
-# # Display - Remarketing
-#     if(channelGrouping like "Display" and ${trafficSource.campaign} like "%Remarketing%", "Display - Remarketing",
-# # Display - Re-engagement
-#     if(channelGrouping like "Display" and (${trafficSource.campaign} like "%Reengage%" or ${trafficSource.campaign} like "%Re-engage%") , "Display - Re-engagement",
-# # Display - Prospecting
-#     if((${trafficSource.campaign} like "%Prospecting%"), "Display - Prospecting",
-# # Any Other Display
-#     if(channelGrouping like "Display", "Any Other Display",
-# # Social - Organic
-#     if((channelGrouping like "Social" or (${trafficSource.source} like "%t.co%" and ${trafficSource.medium} like "%t.co%") or (${trafficSource.source} like "%social%" and ${trafficSource.medium} like "%social%") or ${trafficSource.source} like "%facebook%" or ${trafficSource.source} like "%facbeook%" or ${trafficSource.source} like "Twitter" or ${trafficSource.source} like "Instagram" or ${trafficSource.source} like "%Blogger%" or ${trafficSource.source} like "PR" or ${trafficSource.source} like "m.vk.com" or ${trafficSource.source} like "youtubesocial" or ${trafficSource.campaign} like "RunningHeroes") and not (${trafficSource.source} like "facebook" and ${trafficSource.medium} like "cpc"), "Social - Organic",
-# # Email - Abandoned Basket
-#     if(channelGrouping like "Email" and ((${trafficSource.source} like "%fresh_relevance%" and ${trafficSource.medium} like "%fresh_relevance%") or ${trafficSource.source} like "%fresh_relevance%" or (${trafficSource.source} like "%fresh-relevance%" and ${trafficSource.medium} like "%fresh-relevance%") or (${trafficSource.source} like "%sales_cycle%" and ${trafficSource.medium} like "%sales_cycle%") or ${trafficSource.source} like "%sales_cycle" or ${trafficSource.source} like "%tms"), "Email - Abandoned Basket",
-# # Email - CRM Campaigns
-#     if((channelGrouping like "Email" or ${trafficSource.source} like "Email" or (${trafficSource.source} like "%links.mandmdirect.mkt5765.com%" and ${trafficSource.medium} like "%referral%") or ${trafficSource.source} like "%outlook.live.com%" or ${trafficSource.source} like "%silverpopmailing%" or ${trafficSource.source} like "%silverpopmailings%" or ${trafficSource.source} like "%SilverpopMailings%" or ${trafficSource.source} like "%FRESH_RELEVANCE%" or ${trafficSource.source} like "%FRESH-RELEVANCE%") and not ((${trafficSource.source} like "%fresh_relevance%" and ${trafficSource.medium} like "%fresh_relevance%") or (${trafficSource.source} like "%sales_cycle%" and ${trafficSource.medium} like "%email%")), "Email - CRM Campaigns",
-# # Direct
-#     if(channelGrouping like "Direct", "Direct",
-# # From Other MandM Sites
-#     if((${trafficSource.source} like "mandmdirect.ie" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "euro.mandmdirect.com" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "mandmdirect.dk" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "mandmdirect.de" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "duffs.com" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "mandmdirect.fr" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "mandmdirect.nl" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "mandmdirect.com" and ${trafficSource.medium} like "refferal"), "From other MandM sites",
-#     "Other")))))))))))))))))));;
 sql: CASE WHEN ( ${channelGrouping} LIKE "Affiliates" or (${trafficSource.source} like "hotukdeals.com" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "shopstyle.co.uk" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "topcashback.co.uk" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "quidco.com" and ${trafficSource.medium} like "referral")or (${trafficSource.source} like "bargainbuysforbusymums.co.uk" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "%voucher%" and ${trafficSource.medium} like "%voucher%") or (${trafficSource.source} like "lovefashionsales.com" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "lovesales.com" and ${trafficSource.medium} like "referral") or ${hits_page.pagePath} like "%affiliatewindow%" or ${hits_page.pagePath} like "%AW1%" or ${hits_page.pagePath} like "%AW2%" or ${hits_page.pagePath} like "%awin%" or ${hits_page.pagePath} like "%shopzilla%" or ${trafficSource.source} like "%ministryofdeals%" or ${trafficSource.source} like "%shopstyle%" or ${trafficSource.source} like "%thesolesupplier%" or ${trafficSource.source} like "%rewardgateway.co.uk%" or ${trafficSource.source} like "%trainerbargain.com%") and (${trafficSource.source} not like "%Blogger%" or ${trafficSource.source} not like "%blogger%") THEN "Affiliates"
 # Organic Search - Google
 WHEN  ( ${channelGrouping} like "Organic Search" or ${trafficSource.source} like "com.google.android.googlequicksearchbox") and ${trafficSource.source} like "%google%" THEN "Organic Search - Google"
