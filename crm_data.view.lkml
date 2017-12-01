@@ -13,7 +13,7 @@ view: crm_data {
   }
 
   dimension: last_order_cust_core {
-    type: number
+    type: date
     sql: ${TABLE}.Last_Order_Cust_Core ;;
   }
 
@@ -23,7 +23,7 @@ view: crm_data {
   }
 
   dimension: last_visit_date {
-    type: number
+    type: date
     sql: ${TABLE}.Last_Visit_Date ;;
   }
 
