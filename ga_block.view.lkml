@@ -429,6 +429,7 @@ view: device_base {
   dimension: screenColors {label: "Screen Colors"}
   dimension: screenResolution {label: "Screen Resolution"}
   dimension: mobileDeviceBranding {label: "Mobile Device Branding"}
+  dimension: devicecategory {label: "Device Category"}
   dimension: mobileDeviceInfo {label: "Mobile Device Info"}
   dimension: mobileDeviceMarketingName {label: "Mobile Device Marketing Name"}
   dimension: mobileDeviceModel {label: "Mobile Device Model"}
@@ -674,6 +675,10 @@ view: hits_eventInfo_base {
 
   dimension: eventAction {label: "Event Action"}
   dimension: eventLabel {label: "Event Label"}
-  dimension: eventValue {label: "Event Category"}
+  #dimension: eventValue {label: "Event Category"}
+  measure: total_events {
+    type: number
+    sql: COUNT(${eventLabel});;
+  }
 
 }
