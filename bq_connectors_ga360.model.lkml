@@ -144,5 +144,6 @@ explore: ga_sessions {
 
 }
 
+fiscal_month_offset: 8
 
 explore: user_facts {}

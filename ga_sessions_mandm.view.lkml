@@ -4,7 +4,14 @@ view: ga_sessions_mandm {
 
 
   measure: firstvisit {
+    label: "First Visit"
     type: min
+    sql: ${visitStart_raw} ;;
+  }
+
+  measure: lastvisit {
+    label: "Last Visit"
+    type: max
     sql: ${visitStart_raw} ;;
   }
 
@@ -96,29 +103,7 @@ view: ga_sessions_mandm {
     WHEN (${trafficSource.source} like "mandmdirect.ie" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "euro.mandmdirect.com" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "mandmdirect.dk" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "mandmdirect.de" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "duffs.com" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "mandmdirect.fr" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "mandmdirect.nl" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "mandmdirect.com" and ${trafficSource.medium} like "refferal") THEN "From other MandM sites"
     ELSE "Other" END ;;
 }
-dimension: financial_week {
-  type: string
-  sql: CASE WHEN ${visitStart_date} BETWEEN '2017-11-6' AND '2017-11-12' THEN "Week 15 FY17"
-      WHEN ${visitStart_date} BETWEEN '2017-11-13' AND '2017-11-19' THEN "Week 16 FY17"
-      WHEN ${visitStart_date} BETWEEN '2017-11-20' AND '2017-11-26' THEN "Week 17 FY17"
-      ELSE "Unknown" END;;
-}
-dimension: financial_week_number {
-  type: string
-  sql: CASE WHEN ${visitStart_date} BETWEEN '2017-11-6' AND '2017-11-12' THEN "15"
-        WHEN ${visitStart_date} BETWEEN '2017-11-13' AND '2017-11-19' THEN "16"
-        WHEN ${visitStart_date} BETWEEN '2017-11-20' AND '2017-11-26' THEN "17"
-        ELSE "Unknown" END;;
-}
 
-dimension: financial_year {
-  type: string
-  sql: CASE WHEN ${visitStart_date} BETWEEN '2014-8-4' AND '2015-8-2' THEN "2015"
-        WHEN ${visitStart_date} BETWEEN '2015-8-3' AND '2016-7-31' THEN "2016"
-        WHEN ${visitStart_date} BETWEEN '2016-8-1' AND '2017-7-31' THEN "2017"
-        WHEN ${visitStart_date} BETWEEN '2017-8-1' AND '2018-7-29' THEN "2018"
-        ELSE "Unknown" END;;
-}
 dimension: has_transaction {
   type: yesno
   sql: ${totals.transactions}>0 ;;
