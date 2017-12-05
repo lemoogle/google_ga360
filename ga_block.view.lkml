@@ -224,6 +224,10 @@ view: totals_base {
   measure: transactions_count {
     type: sum
     sql: ${TABLE}.transactions ;;
+#     filters: {
+#       field: transactions_count
+#       value: "-NULL"
+#     }
   }
   measure: transactionRevenue_total {
     label: "Transaction Revenue Total"
