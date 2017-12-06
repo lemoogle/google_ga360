@@ -22,50 +22,30 @@ view: ga_sessions {
   # The SQL_TABLE_NAME must be replaced here for date partitioned queries to work properly.
 
 
-  sql_table_name: `43786551.ga_sessions_*` ;;
+  sql_table_name: (SELECT * FROM (
+            SELECT 'mandmdirect.com' as site, _TABLE_SUFFIX as tablesuffix, *
+            FROM `43786551.ga_sessions_*`
+            UNION ALL
+            SELECT 'mandmdirect.de' as site, _TABLE_SUFFIX as tablesuffix, *
+            FROM `43787040.ga_sessions_*`
+            ))
+            ;;
 
-  parameter: site {
-    hidden: yes
-    type: number
-    allowed_value: {
-      label: "mandmdirect.com"
-      value: "43786551"
-    }
-    allowed_value: {
-      label: "mandmdirect.de"
-      value: "43787040"
-    }
-    allowed_value: {
-      label: "mandmdirect.nl"
-      value: "82755245"
-    }
-    allowed_value: {
-      label: "mandmdirect.dk"
-      value: "43786178"
-    }
-    allowed_value: {
-      value: "43786097"
-      label: "mandmdirect.ie"
-    }
-    allowed_value: {
-      value: "43786092"
-      label: "mandmdirect.fr"
-    }
-    allowed_value: {
-      value: "160971340"
-      label: "mandmdirect.rollup"
-    }
-    default_value: "43786551"
+  dimension: site {
+    type: string
+    suggestions: ["mandmdirect.com","mandmdirect.de"]
   }
 
+  dimension: tablesuffix {
+    type: string
+    hidden: yes
+  }
 
-  # dimension: custom_dimension_2 {
-  #   sql: (SELECT value FROM UNNEST(${TABLE}.customdimensions) WHERE index=2) ;;
-  # }
+  dimension: partition_date {
+    type: date_time
+    sql: TIMESTAMP(PARSE_DATE('%Y%m%d', REGEXP_EXTRACT(${tablesuffix},r'^\d\d\d\d\d\d\d\d')))  ;;
+  }
 
-  # dimension: custom_dimension_3 {
-  #   sql: (SELECT value FROM UNNEST(${TABLE}.customdimensions) WHERE index=3) ;;
-  # }
 }
 
 view: geoNetwork {
