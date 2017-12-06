@@ -150,15 +150,20 @@ view: ga_sessions_base {
     sql: TIMESTAMP_SECONDS(${TABLE}.visitStarttime) ;;
   }
 
+  dimension: day_of_week_date {
+    sql: EXTRACT(DAYOFWEEK FROM ${visitStart_date}-1) ;;
+  }
+  dimension: current_day_of_week_date {
+    sql: EXTRACT(DAYOFWEEK FROM CURRENT_DATE()-1);;
+  }
   dimension: this_week_and_last_years {
     sql:  CASE WHEN EXTRACT(YEAR FROM ${visitStart_date}) = EXTRACT(YEAR FROM CURRENT_DATE())
-            AND EXTRACT(DAYOFWEEK FROM ${visitStart_date}) <= EXTRACT(DAYOFWEEK FROM CURRENT_DATE())
+            AND EXTRACT(DAYOFWEEK FROM DATE_SUB(${visitStart_date},INTERVAL 1 DAY)) < EXTRACT(DAYOFWEEK FROM  DATE_SUB(CURRENT_DATE(),INTERVAL 1 DAY))
             THEN "this current week"
 
           WHEN EXTRACT(YEAR FROM ${visitStart_date}) = EXTRACT(YEAR FROM CURRENT_DATE()) -1
-            AND EXTRACT(DAYOFWEEK FROM ${visitStart_date}) < EXTRACT(DAYOFWEEK FROM CURRENT_DATE())
+            AND EXTRACT(DAYOFWEEK FROM DATE_SUB(${visitStart_date},INTERVAL 1 DAY)) < EXTRACT(DAYOFWEEK FROM DATE_SUB(CURRENT_DATE(),INTERVAL 1 DAY))
             THEN "last year's current week"
-
           ELSE null
           END
     ;;
