@@ -17,7 +17,7 @@ view: ga_sessions_mandm {
 
   measure: firsttransaction{
     type: min
-    sql: ${visitStart_raw} ;;
+    sql: ${vishttps://mandmdirect.eu.looker.com/projects/ga_360/files/ga_sessions_mandm.view.lkml?line=26itStart_raw} ;;
     filters: {
       field: has_transaction
       value: "yes"
@@ -26,8 +26,10 @@ view: ga_sessions_mandm {
   measure: conversion_rate {
     type: number
     value_format: "0.00%"
-    sql: ${totals.transactions_count}/${totals.visits_total};;
+    sql: ${totals.transactions_count}/NULLIF(${totals.visits_total},0);;
   }
+
+
 
   measure: visits_total_last_year {
     type: count
@@ -160,7 +162,7 @@ dimension: new_user_id {
 
 
 
-  ######### FINANCIAL YEAR##########
+######### FINANCIAL YEAR##########
 
 
 
