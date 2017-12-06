@@ -45,6 +45,20 @@ view: ga_sessions_base {
     sql: TIMESTAMP_SECONDS(${TABLE}.visitStarttime) ;;
   }
 
+  dimension: this_week_and_last_years {
+    sql:  CASE WHEN EXTRACT(YEAR FROM ${visitStart_date}) = EXTRACT(YEAR FROM CURRENT_DATE())
+            AND EXTRACT(DAYOFWEEK FROM ${visitStart_date}) <= EXTRACT(DAYOFWEEK FROM CURRENT_DATE())
+            THEN "this current week"
+
+          WHEN EXTRACT(YEAR FROM ${visitStart_date}) = EXTRACT(YEAR FROM CURRENT_DATE()) -1
+            AND EXTRACT(DAYOFWEEK FROM ${visitStart_date}) < EXTRACT(DAYOFWEEK FROM CURRENT_DATE())
+            THEN "last year's current week"
+
+          ELSE null
+          END
+    ;;
+  }
+
   dimension_group: visitStartweek {
     hidden: no
     type: time
@@ -432,7 +446,8 @@ view: hits_item_base {
   }
   dimension: transactionId {label: "Transaction ID"}
   dimension: productName {label: "Product Name"}
-  dimension: productCategory {label: "Product Catetory"}
+  dimension: productCategory {label: "Product Category"}
+  dimension: productBrand {label: "Product Brand"}
   dimension: productSku {label: "Product Sku"}
   dimension: itemQuantity {label: "Item Quantity"}
   dimension: itemRevenue {label: "Item Revenue"}
@@ -578,6 +593,11 @@ view: hits_eventInfo_base {
   measure: total_events {
     type: number
     sql: COUNT(${eventLabel});;
-  }
 
+  }
+  measure: total_unique_events {
+    type: number
+    sql: COUNT(DISTINCT ${eventLabel});;
+
+  }
 }
