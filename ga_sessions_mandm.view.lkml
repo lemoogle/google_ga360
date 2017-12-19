@@ -17,7 +17,7 @@ view: ga_sessions_mandm {
 
   measure: firsttransaction{
     type: min
-    sql: ${vishttps://mandmdirect.eu.looker.com/projects/ga_360/files/ga_sessions_mandm.view.lkml?line=26itStart_raw} ;;
+    sql: ${visitStart_raw} ;;
     filters: {
       field: has_transaction
       value: "yes"
