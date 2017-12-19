@@ -21,7 +21,7 @@ datagroup: default{
 }
 
 explore: ga_sessions {
-  label: "Customer and Site Management"
+  label: "Customer and Site Behavior"
   from: ga_sessions_mandm
 
   extends: [ga_sessions_block]
