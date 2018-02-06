@@ -29,7 +29,11 @@ view: ga_sessions_mandm {
     sql: ${totals.transactions_count}/NULLIF(${totals.visits_total},0);;
   }
 
-
+  dimension: checkout_stage {
+    type: string
+    sql: CASE WHEN ${hits_eventInfo.eventAction} LIKE "1_Sign In" THEN "Started"
+    WHEN ${hits_eventInfo.eventAction} LIKE "%_Order Confirmation" THEN "Completed" END;;
+  }
 
   measure: visits_total_last_year {
     type: count
@@ -65,12 +69,13 @@ view: ga_sessions_mandm {
   }
 
   dimension: UK_master_channel_group{
+    label: "Master Channel Grouping"
     type: string
     sql: CASE WHEN ( ${channelGrouping} LIKE "Affiliates" or (${trafficSource.source} like "hotukdeals.com" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "shopstyle.co.uk" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "topcashback.co.uk" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "quidco.com" and ${trafficSource.medium} like "referral")or (${trafficSource.source} like "bargainbuysforbusymums.co.uk" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "%voucher%" and ${trafficSource.medium} like "%voucher%") or (${trafficSource.source} like "lovefashionsales.com" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "lovesales.com" and ${trafficSource.medium} like "referral") or ${hits_page.pagePath} like "%affiliatewindow%" or ${hits_page.pagePath} like "%AW1%" or ${hits_page.pagePath} like "%AW2%" or ${hits_page.pagePath} like "%awin%" or ${hits_page.pagePath} like "%shopzilla%" or ${trafficSource.source} like "%ministryofdeals%" or ${trafficSource.source} like "%shopstyle%" or ${trafficSource.source} like "%thesolesupplier%" or ${trafficSource.source} like "%rewardgateway.co.uk%" or ${trafficSource.source} like "%trainerbargain.com%") and (${trafficSource.source} not like "%Blogger%" or ${trafficSource.source} not like "%blogger%") THEN "Affiliates"
 # Organic Search - Google
     WHEN  ( ${channelGrouping} like "Organic Search" or ${trafficSource.source} like "com.google.android.googlequicksearchbox") and ${trafficSource.source} like "%google%" THEN "Organic Search - Google"
 # Organic Search - Any Other
-    WHEN ( ${channelGrouping} like "Organic Search" or ${trafficSource.source} like "%duckduckgo%") and ((${trafficSource.source} like "%bing%" and ${trafficSource.medium} like "%bing%") or (${trafficSource.source} like "%yahoo%" and ${trafficSource.medium} like "%yahoo%") or (${trafficSource.source} like "%duckduckgo.com%" and ${trafficSource.medium} like "%referral%") or (${trafficSource.source} like "%ask%" and ${trafficSource.medium} like "%organic%") or (${trafficSource.source} like "%aol%" and ${trafficSource.medium} like "%organic%") or (${trafficSource.source} like "%yandex%" and ${trafficSource.medium} like "%organic%")) THEN "Organic Search - Any Other"
+    WHEN ( ${channelGrouping} like "Organic Search" or ${trafficSource.source} like "%duckduckgo%") and ((${trafficSource.source} like "%bing%" and ${trafficSource.medium} like "%organic%") or (${trafficSource.source} like "%yahoo%" and ${trafficSource.medium} like "%yahoo%") or (${trafficSource.source} like "%duckduckgo.com%" and ${trafficSource.medium} like "%referral%") or (${trafficSource.source} like "%ask%" and ${trafficSource.medium} like "%organic%") or (${trafficSource.source} like "%aol%" and ${trafficSource.medium} like "%organic%") or (${trafficSource.source} like "%yandex%" and ${trafficSource.medium} like "%organic%")) THEN "Organic Search - Any Other"
 # Social - Remarketing
     WHEN ((${trafficSource.source} like "facebook" and ${trafficSource.medium} like "%cpc%") or (${trafficSource.source} like "%facebook+instagram%" and ${trafficSource.medium} like "%cpc%")) and (${trafficSource.campaign} like "%DPA%" or ${trafficSource.campaign} like "%Re-engagement - Automated Ad%")THEN "Social - Remarketing"
 # Social - Prospecting
@@ -78,9 +83,9 @@ view: ga_sessions_mandm {
 # PPC - Branded
     WHEN ( ${channelGrouping} like "Paid Search" and ${trafficSource.campaign} like "%Branded%") THEN "PPC - Branded"
 # PPC - PLAs
-    WHEN ( ${channelGrouping} like "Paid Search" and ${trafficSource.campaign} like "%Product Listing Ad%")THEN "PPC - PLAs"
+    WHEN ( ${channelGrouping} like "Paid Search" and ${trafficSource.campaign} like "%Product Listing Ad%") OR ${trafficSource.campaign} LIKE "Showcase Ads%" THEN "PPC - PLAs"
 # PPC - Generic
-    WHEN  ${channelGrouping} like "Paid Search" and (${trafficSource.campaign} like "%Brand Products%" or ${trafficSource.campaign} like "%Products%" or ${trafficSource.campaign} like "%DSA%" or ${trafficSource.campaign} like "%Competitors%")THEN "PPC - Generic"
+    WHEN  ${channelGrouping} like "Paid Search" and (${trafficSource.campaign} like "%Brand Products%" or ${trafficSource.campaign} like "%Products%" or ${trafficSource.campaign} like "%DSA%" or ${trafficSource.campaign} like "%Competitors%") or (${trafficSource.campaign} LIKE "IMv2%") THEN "PPC - Generic"
 # Youtube - Remarketing
     WHEN (${trafficSource.campaign} like "RemarketingYT") THEN "Youtube - Remarketing"
 # Youtube - Prospecting
@@ -102,7 +107,7 @@ view: ga_sessions_mandm {
 # Direct
     WHEN  ${channelGrouping} like "Direct" THEN "Direct"
 # From Other MandM Sites
-    WHEN (${trafficSource.source} like "mandmdirect.ie" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "euro.mandmdirect.com" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "mandmdirect.dk" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "mandmdirect.de" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "duffs.com" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "mandmdirect.fr" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "mandmdirect.nl" and ${trafficSource.medium} like "refferal") or (${trafficSource.source} like "mandmdirect.com" and ${trafficSource.medium} like "refferal") THEN "From other MandM sites"
+    WHEN (${trafficSource.source} like "mandmdirect.ie" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "euro.mandmdirect.com") or (${trafficSource.source} like "mandmdirect.dk" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "mandmdirect.de" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "duffs.com" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "mandmdirect.fr" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "mandmdirect.nl" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "mandmdirect.com" and ${trafficSource.medium} like "referral" or (${trafficSource.source} like "mandmdirect.pl" and ${trafficSource.medium} like "referral")) THEN "From other MandM sites"
     ELSE "Other" END ;;
 }
 
@@ -159,12 +164,30 @@ dimension: new_user_id {
   sql: (SELECT value FROM UNNEST(${TABLE}.customdimensions) WHERE index=2) ;;
 }
 
+######### FINANCIAL YEAR #########
 
+######## TEST PERAMETER #########
 
+  parameter: show_me {
+    type: unquoted
+    allowed_value: {
+      label: "Sessions"
+      value: "visits"
+    }
+    allowed_value: {
+      label: "Transactions"
+      value: "transactions_count"
+    }
+    allowed_value: {
+      label: "Users"
+      value: "unique_visitor"
+    }
+  }
 
-######### FINANCIAL YEAR##########
-
-
-
+  measure: dynamic_sum {
+    type: sum
+    sql: ${TABLE}.{% parameter show_me %} ;;
+    value_format_name: "usd"
+  }
 
 }

@@ -28,12 +28,24 @@ view: ga_sessions {
             UNION ALL
             SELECT 'mandmdirect.de' as site, _TABLE_SUFFIX as tablesuffix, *
             FROM `43787040.ga_sessions_*`
+            UNION ALL
+            SELECT 'mandmdirect.fr' as site, _TABLE_SUFFIX as tablesuffix, *
+            FROM `43786092.ga_sessions_*`
+            UNION ALL
+            SELECT 'mandmdirect.ie' as site, _TABLE_SUFFIX as tablesuffix, *
+            FROM `43786097.ga_sessions_*`
+            UNION ALL
+            SELECT 'mandmdirect.dk' as site, _TABLE_SUFFIX as tablesuffix, *
+            FROM `43786178.ga_sessions_*`
+            UNION ALL
+            SELECT 'mandmdirect.nl' as site, _TABLE_SUFFIX as tablesuffix, *
+            FROM `82755245.ga_sessions_*`
             ))
             ;;
 
   dimension: site {
     type: string
-    suggestions: ["mandmdirect.com","mandmdirect.de"]
+    suggestions: ["mandmdirect.com","mandmdirect.de","mandmdirect.fr","mandmdirect.ie","mandmdirect.dk","mandmdirect.nl"]
   }
 
   dimension: tablesuffix {
@@ -84,6 +96,10 @@ view: hits_transaction {
 
 view: hits_item {
   extends: [hits_item_base]
+}
+
+view: hits_product {
+  extends: [hits_product_base]
 }
 
 # -- Advertising Fields

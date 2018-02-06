@@ -76,6 +76,11 @@ explore: ga_sessions_base {
     relationship: one_to_one
   }
 
+  join: hits_product{
+    view_label: "Session: Hits: Product"
+    sql: LEFT JOIN UNNEST(${hits.product}) as hits_product ;;
+    relationship: one_to_one
+  }
 
   join: hits_customDimensions {
     view_label: "Session: Hits: Custom Dimensions"
@@ -437,7 +442,6 @@ view: adwordsClickInfo_base {
 
 view: device_base {
   extension: required
-  dimension: deviceCategory { label: "Device Category" }
   dimension: browser {}
   dimension: browserVersion {label:"Browser Version"}
   dimension: operatingSystem {label: "Operating System"}
@@ -452,7 +456,8 @@ view: device_base {
   dimension: screenColors {label: "Screen Colors"}
   dimension: screenResolution {label: "Screen Resolution"}
   dimension: mobileDeviceBranding {label: "Mobile Device Branding"}
-  dimension: devicecategory {label: "Device Category"}
+  dimension: devicecategory {label: "Device Category"
+    suggestions: ["mobile","desktop","tablet"]}
   dimension: mobileDeviceInfo {label: "Mobile Device Info"}
   dimension: mobileDeviceMarketingName {label: "Mobile Device Marketing Name"}
   dimension: mobileDeviceModel {label: "Mobile Device Model"}
@@ -505,6 +510,7 @@ view: hits_base {
   dimension: eventInfo {hidden:yes}
   dimension: exceptionInfo {hidden: yes}
   dimension: experiment {hidden: yes}
+  dimension: product {hidden: yes}
 
 
   set: detail {
@@ -563,9 +569,33 @@ view: hits_item_base {
   dimension: itemRevenue {label: "Item Revenue"}
   dimension: curencyCode {label: "Curency Code"}
   dimension: localItemRevenue {label:"Local Item Revenue"}
-  measure: total_item_revenue {
+
+  measure: product_count {
+    type: count_distinct
+    sql: ${productSku} ;;
+    drill_fields: [productName, productCategory, productSku, total_item_revenue]
+  }
+}
+
+view: hits_product_base {
+  extension: required
+
+  dimension: id {
+    primary_key: yes
+    sql: ${hits.id} ;;
+  }
+  dimension: transactionId {label: "Transaction ID"}
+  dimension: v2ProductName {label: "Product Name"}
+  dimension: v2ProductCategory {label: "Product Category"}
+  dimension: productBrand {label: "Product Brand"}
+  dimension: productSku {label: "Product Sku"}
+  dimension: productQuantity {label: "Product Quantity"}
+  dimension: productPrice {label: "Product Price"}
+  dimension: productListPosition {label:"Product List Position"}
+  dimension: productListName {label:"Product List Name"}
+  measure: total_product_price {
     type: sum
-    sql: ${itemRevenue} ;;
+    sql: ${productPrice}/1000000 ;;
   }
   measure: product_count {
     type: count_distinct
@@ -695,6 +725,7 @@ view: hits_eCommerceAction_base {
 
 view: hits_eventInfo_base {
   extension: required
+
   dimension: eventCategory {label: "Event Category"}
 
   dimension: eventAction {label: "Event Action"}
@@ -702,12 +733,6 @@ view: hits_eventInfo_base {
   #dimension: eventValue {label: "Event Category"}
   measure: total_events {
     type: number
-    sql: COUNT(${eventLabel});;
-
-  }
-  measure: total_unique_events {
-    type: number
-    sql: COUNT(DISTINCT ${eventLabel});;
-
+    sql:  COUNT(${eventLabel}) ;;
   }
 }
