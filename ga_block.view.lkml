@@ -178,7 +178,7 @@ view: ga_sessions_base {
     hidden: no
     type: time
     timeframes: [week, week_of_year,year]
-    sql: ${visitStart_raw} ;;
+    sql: CAST(${visitStart_week} AS DATE) ;;
   }
 
   ## use visit or hit start time instead
