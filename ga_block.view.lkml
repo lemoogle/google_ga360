@@ -593,10 +593,13 @@ view: hits_product_base {
   dimension: productPrice {label: "Product Price"}
   dimension: productListPosition {label:"Product List Position"}
   dimension: productListName {label:"Product List Name"}
+
   measure: total_product_price {
     type: sum
     sql: ${productPrice}/1000000 ;;
+    value_format_name: "gbp_0"
   }
+
   measure: product_count {
     type: count_distinct
     sql: ${productSku} ;;

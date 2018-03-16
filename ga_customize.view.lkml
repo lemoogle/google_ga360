@@ -40,12 +40,15 @@ view: ga_sessions {
             UNION ALL
             SELECT 'mandmdirect.nl' as site, _TABLE_SUFFIX as tablesuffix, *
             FROM `82755245.ga_sessions_*`
+            UNION ALL
+            SELECT 'mandmdirect.pl' as site, _TABLE_SUFFIX as tablesuffix, *
+            FROM `105754715.ga_sessions_*`
             ))
             ;;
 
   dimension: site {
     type: string
-    suggestions: ["mandmdirect.com","mandmdirect.de","mandmdirect.fr","mandmdirect.ie","mandmdirect.dk","mandmdirect.nl"]
+    suggestions: ["mandmdirect.com","mandmdirect.de","mandmdirect.fr","mandmdirect.ie","mandmdirect.dk","mandmdirect.nl","mandmdirect.pl"]
   }
 
   dimension: tablesuffix {

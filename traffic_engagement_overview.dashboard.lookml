@@ -1189,9 +1189,9 @@
     title: Date
     type: date_filter
     default_value: '2017-09-10 00:00:00'
-    model:
-    explore:
-    field:
-    listens_to_filters: []
+#     model:
+#     explore:
+#     field:
+#     listens_to_filters: []
     allow_multiple_values: true
     required: false
