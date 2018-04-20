@@ -364,6 +364,12 @@ view: totals_base {
     sql: (${TABLE}.transactionRevenue/1000000) ;;
     value_format_name: gbp_0
   }
+  measure: AOV {
+    label: "Average order value"
+    type: average
+    sql: (${TABLE}.transactionRevenue/1000000) ;;
+    value_format_name: gbp
+  }
   measure: newVisits_total {
     label: "New Visits Total"
     type: sum
