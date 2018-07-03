@@ -489,6 +489,11 @@ view: hits_base {
     label: "Is Secure"
     type: yesno
   }
+  dimension: isExit {
+    label: "Is exit"
+    type: yesno
+  }
+
   dimension: isiInteraction {
     label: "Is Interaction"
     type: yesno

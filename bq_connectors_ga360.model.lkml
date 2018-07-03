@@ -21,7 +21,7 @@ datagroup: default{
 }
 
 explore: ga_sessions {
-  label: "Customer and Site Behavior"
+  label: "Google Analyticsr"
   from: ga_sessions_mandm
 
   extends: [ga_sessions_block]
