@@ -38,11 +38,6 @@ explore: ga_sessions {
     sql_on: ${ga_sessions.new_user_id}=${user_facts.user_id} ;;
   }
 
-  join: crm_data {
-    relationship: many_to_one
-    sql_on: ${ga_sessions.new_user_id}=${crm_data.latest_google_id} ;;
-  }
-
 }
 
 fiscal_month_offset: 8
