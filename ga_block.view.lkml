@@ -117,8 +117,12 @@ view: ga_sessions_base {
 
   dimension: id {
     primary_key: yes
-    sql: CONCAT(CAST(${fullVisitorId} AS STRING), '|', COALESCE(CAST(${visitId} AS STRING),'')) ;;
+#    sql: CONCAT(CAST(${fullVisitorId} AS STRING), '|', COALESCE(CAST(${visitId} AS STRING),'')) ;;
+    sql: CONCAT(CAST(${fullVisitorId} AS STRING), '|', COALESCE(CAST(${visitId} AS STRING),''), CAST(${partition_date} as STRING)) ;;
   }
+
+
+
   dimension: visitorId {label: "Visitor ID"}
 
   dimension: visitnumber {
