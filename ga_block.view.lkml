@@ -119,6 +119,8 @@ view: ga_sessions_base {
     primary_key: yes
 #    sql: CONCAT(CAST(${fullVisitorId} AS STRING), '|', COALESCE(CAST(${visitId} AS STRING),'')) ;;
     sql: CONCAT(CAST(${fullVisitorId} AS STRING), '|', COALESCE(CAST(${visitId} AS STRING),''), CAST(${partition_date} as STRING)) ;;
+    label: "Visit ID"
+    description: "A unique ID for the session, concat fullvisitorid, visitid and partition date."
   }
 
 
@@ -357,6 +359,8 @@ view: totals_base {
   measure: transactions_count {
     type: sum
     sql: ${TABLE}.transactions ;;
+    label: "Orders"
+    description: "GA orders."
 #     filters: {
 #       field: transactions_count
 #       value: "-NULL"

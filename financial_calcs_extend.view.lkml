@@ -8,6 +8,7 @@ view: financial_calcs_extend {
         WHEN ${visitStart_date} BETWEEN '2017-11-13' AND '2017-11-19' THEN "Week 16 FY17"
         WHEN ${visitStart_date} BETWEEN '2017-11-20' AND '2017-11-26' THEN "Week 17 FY17"
         ELSE "Unknown" END;;
+    description: "MandM financial week (Week x FYx)."
   }
   dimension: financial_week_number {
     type: string
@@ -15,6 +16,7 @@ view: financial_calcs_extend {
         WHEN ${visitStart_date} BETWEEN '2017-11-13' AND '2017-11-19' THEN "16"
         WHEN ${visitStart_date} BETWEEN '2017-11-20' AND '2017-11-26' THEN "17"
         ELSE "Unknown" END;;
+    description: "MandM financial week number."
   }
 
   dimension: financial_year {
@@ -24,6 +26,7 @@ view: financial_calcs_extend {
         WHEN ${visitStart_date} BETWEEN '2016-8-1' AND '2017-7-31' THEN "2017"
         WHEN ${visitStart_date} BETWEEN '2017-8-1' AND '2018-7-29' THEN "2018"
         ELSE "Unknown" END;;
+    description: "MandM financial year."
   }
 
 }

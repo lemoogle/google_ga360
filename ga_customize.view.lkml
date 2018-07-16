@@ -9,7 +9,7 @@ explore: ga_sessions_block {
   always_filter: {
     filters: {
       field: ga_sessions.partition_date
-      value: "2017-11-10 00:00:00"
+      value: "2018-07-01 00:00:00"
       ## Partition Date should always be set to a recent date to avoid runaway queries
    }
   }
@@ -49,6 +49,7 @@ view: ga_sessions {
   dimension: site {
     type: string
     suggestions: ["mandmdirect.com","mandmdirect.de","mandmdirect.fr","mandmdirect.ie","mandmdirect.dk","mandmdirect.nl","mandmdirect.pl"]
+    description: "Website where the visit occured."
   }
 
   dimension: tablesuffix {

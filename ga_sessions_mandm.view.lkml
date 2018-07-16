@@ -7,12 +7,14 @@ view: ga_sessions_mandm {
     label: "First Visit"
     type: min
     sql: ${visitStart_raw} ;;
+    description: "The date of the first visit of this UserID."
   }
 
   measure: lastvisit {
     label: "Last Visit"
     type: max
     sql: ${visitStart_raw} ;;
+    description: "The date of the last visit of this UserID."
   }
 
   measure: firsttransaction{
@@ -22,6 +24,7 @@ view: ga_sessions_mandm {
       field: has_transaction
       value: "yes"
     }
+    description: "The date of the first order from this UserID."
   }
   measure: conversion_rate {
     type: number
@@ -71,6 +74,7 @@ view: ga_sessions_mandm {
   dimension: UK_master_channel_group{
     label: "Master Channel Grouping"
     type: string
+    description: "MandM master channel grouping."
     sql: CASE WHEN ( ${channelGrouping} LIKE "Affiliates" or (${trafficSource.source} like "hotukdeals.com" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "shopstyle.co.uk" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "topcashback.co.uk" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "%quidco%" and ${trafficSource.medium} like "referral")or (${trafficSource.source} like "bargainbuysforbusymums.co.uk" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "%voucher%" and ${trafficSource.medium} like "%voucher%") or (${trafficSource.source} like "lovefashionsales.com" and ${trafficSource.medium} like "referral") or (${trafficSource.source} like "lovesales.com" and ${trafficSource.medium} like "referral") or ${hits_page.pagePath} like "%affiliatewindow%" or ${hits_page.pagePath} like "%AW1%" or ${hits_page.pagePath} like "%AW2%" or ${hits_page.pagePath} like "%awin%" or ${trafficSource.source} like "%webgains%" or ${hits_page.pagePath} like "%shopzilla%" or ${trafficSource.source} like "%ministryofdeals%" or ${trafficSource.source} like "%awin%" or ${trafficSource.source} like "%shopstyle%" or ${trafficSource.source} like "%shopalike%"or ${trafficSource.source} like "%affiliatewindow%" or ${trafficSource.source} like "%thesolesupplier%" or ${trafficSource.source} like "%rewardgateway.co.uk%" or ${trafficSource.source} like "%trainerbargain.com%") and (${trafficSource.source} not like "%Blogger%" or ${trafficSource.source} not like "%blogger%") THEN "Affiliates"
 # Organic Search - Google
     WHEN  ( ${channelGrouping} like "Organic Search" or ${trafficSource.source} like "com.google.android.googlequicksearchbox") and ${trafficSource.source} like "%google%" THEN "Organic Search - Google"
@@ -162,6 +166,8 @@ measure: identification_rate {
 
 dimension: new_user_id {
   sql: (SELECT value FROM UNNEST(${TABLE}.customdimensions) WHERE index=2) ;;
+  label: "User ID"
+  description: "Primary MandM user key, the GUID."
 }
 
 ######### FINANCIAL YEAR #########
