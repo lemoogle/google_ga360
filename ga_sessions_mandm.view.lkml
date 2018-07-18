@@ -177,7 +177,7 @@ view: ga_sessions_mandm {
     and not (${trafficSource.source} like "facebook" and ${trafficSource.medium} like "cpc") THEN "Social - Organic"
 # Email - Abandoned Basket
     WHEN  (${channelGrouping} like "Email"
-    or ${trafficSource} like "RedEye")
+    or ${trafficSource.source} like "RedEye")
     and ((${trafficSource.source} like "%fresh_relevance%" and ${trafficSource.medium} like "%fresh_relevance%")
     or ${trafficSource.source} like "%fresh_relevance%"
     or (${trafficSource.source} like "%fresh-relevance%" and ${trafficSource.medium} like "%fresh-relevance%")
