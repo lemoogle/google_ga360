@@ -96,22 +96,22 @@ view: ga_sessions_mandm {
     or ${trafficSource.source} like "%thesolesupplier%"
     or ${trafficSource.source} like "%rewardgateway.co.uk%"
     or ${trafficSource.source} like "%trainerbargain.com%"
-    or ${trafficSource} like "%shopalike%"
-    or ${trafficSource} like "%webgains%"
-    or ${trafficSource} like "%affiliatewindow%"
-    or ${trafficSource} like "%stylight%"
-    or ${trafficSource} like "%ladenzeile%"
-    or ${trafficSource} like "%domodi%"
-    or ${trafficSource} like "%billiger%"
-    or ${trafficSource} like "%zanox%"
-    or ${trafficSource} like "%guenstiger%"
-    or ${trafficSource} like "%mybestbrands%"
+    or ${trafficSource.source} like "%shopalike%"
+    or ${trafficSource.source} like "%webgains%"
+    or ${trafficSource.source} like "%affiliatewindow%"
+    or ${trafficSource.source} like "%stylight%"
+    or ${trafficSource.source} like "%ladenzeile%"
+    or ${trafficSource.source} like "%domodi%"
+    or ${trafficSource.source} like "%billiger%"
+    or ${trafficSource.source} like "%zanox%"
+    or ${trafficSource.source} like "%guenstiger%"
+    or ${trafficSource.source} like "%mybestbrands%"
     or ${hits_page.pagePath} like "%webgains%"
     or ${hits_page.pagePath} like "%affiliate%"
     or ${hits_page.pagePath} like "%WG1%"
     or  ${hits_page.pagePath} like "%WG2%"
     or ${hits_page.pagePath} like "%network=webgains%"
-    or ${trafficSource} like "%AWIN%")
+    or ${trafficSource.source} like "%AWIN%")
     and (${trafficSource.source} not like "%Blogger%"
     or ${trafficSource.source} not like "%blogger%") THEN "Affiliates"
 # Organic Search - Google
@@ -126,13 +126,13 @@ view: ga_sessions_mandm {
     or (${trafficSource.source} like "%aol%" and ${trafficSource.medium} like "%organic%")
     or (${trafficSource.source} like "%yandex%" and ${trafficSource.medium} like "%organic%")) THEN "Organic Search - Any Other"
 # Social - Remarketing
-    WHEN (${trafficSource} like "%facebook%" or ${trafficSource} like "%instagram%")
+    WHEN (${trafficSource.source} like "%facebook%" or ${trafficSource.source} like "%instagram%")
     and (${trafficSource.campaign} like "%Re-targeting%" or ${trafficSource.campaign} like "%DPA%") THEN "Social - Remarketing"
 # Social - Prospecting
-    WHEN (${trafficSource} like "%facebook%" or ${trafficSource} like "%instagram%")
+    WHEN (${trafficSource.source} like "%facebook%" or ${trafficSource.source} like "%instagram%")
     and ${trafficSource.campaign} like "%Prospecting%" then "Social - Prospecting"
 # Social - Re-engagement
-    WHEN (${trafficSource} like "%facebook%" or ${trafficSource} like "%instagram%")
+    WHEN (${trafficSource.source} like "%facebook%" or ${trafficSource.source} like "%instagram%")
     and ${trafficSource.campaign} like "%Re-engagement%" then "Social - Re-engagement"
 # PPC - Branded
     WHEN ( ${channelGrouping} like "Paid Search" and ${trafficSource.campaign} like "%Branded%") THEN "PPC - Branded"
