@@ -49,7 +49,7 @@ view: ga_sessions {
   dimension: site {
     type: string
     suggestions: ["mandmdirect.com","mandmdirect.de","mandmdirect.fr","mandmdirect.ie","mandmdirect.dk","mandmdirect.nl","mandmdirect.pl"]
-    description: "Website where the visit occured."
+    description: "MandM website."
   }
 
   dimension: tablesuffix {

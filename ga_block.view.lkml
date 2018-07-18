@@ -119,10 +119,7 @@ view: ga_sessions_base {
     primary_key: yes
 #    sql: CONCAT(CAST(${fullVisitorId} AS STRING), '|', COALESCE(CAST(${visitId} AS STRING),'')) ;;
     sql: CONCAT(CAST(${fullVisitorId} AS STRING), '|', COALESCE(CAST(${visitId} AS STRING),''), CAST(${partition_date} as STRING)) ;;
-    label: "Visit ID"
-    description: "A unique ID for the session, concat fullvisitorid, visitid and partition date."
   }
-
 
 
   dimension: visitorId {label: "Visitor ID"}
@@ -192,7 +189,6 @@ view: ga_sessions_base {
     hidden: yes
   }
   dimension: socialEngagementType {label: "Social Engagement Type"}
-  dimension: userid {label: "User ID"}
 
   measure: session_count {
     type: count

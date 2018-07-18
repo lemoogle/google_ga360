@@ -7,14 +7,12 @@ view: ga_sessions_mandm {
     label: "First Visit"
     type: min
     sql: ${visitStart_raw} ;;
-    description: "The date of the first visit of this UserID."
   }
 
   measure: lastvisit {
     label: "Last Visit"
     type: max
     sql: ${visitStart_raw} ;;
-    description: "The date of the last visit of this UserID."
   }
 
   measure: firsttransaction{
@@ -24,7 +22,6 @@ view: ga_sessions_mandm {
       field: has_transaction
       value: "yes"
     }
-    description: "The date of the first order from this UserID."
   }
   measure: conversion_rate {
     type: number
