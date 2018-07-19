@@ -457,13 +457,14 @@ view: device_base {
   dimension: operatingSystem {label: "Operating System"}
   dimension: operatingSystemVersion {label: "Operating System Version"}
   dimension: isMobile {label: "Is Mobile"}
-  dimension: flashVersion {label: "Flash Version"}
+  dimension: flashVersion {label: "Flash Version" hidden: yes}
   dimension: javaEnabled {
     label: "Java Enabled"
     type: yesno
+    hidden: yes
   }
   dimension: language {}
-  dimension: screenColors {label: "Screen Colors"}
+  dimension: screenColors {label: "Screen Colors" hidden: yes}
   dimension: screenResolution {label: "Screen Resolution"}
   dimension: mobileDeviceBranding {label: "Mobile Device Branding"}
   dimension: devicecategory {label: "Device Category"
@@ -471,7 +472,7 @@ view: device_base {
   dimension: mobileDeviceInfo {label: "Mobile Device Info"}
   dimension: mobileDeviceMarketingName {label: "Mobile Device Marketing Name"}
   dimension: mobileDeviceModel {label: "Mobile Device Model"}
-  dimension: mobileDeviceInputSelector {label: "Mobile Device Input Selector"}
+  dimension: mobileDeviceInputSelector {label: "Mobile Device Input Selector" hidden: yes}
 }
 
 view: hits_base {
@@ -574,26 +575,24 @@ view: hits_item_base {
   dimension: id {
     primary_key: yes
     sql: ${hits.id} ;;
+    hidden: yes
   }
-  dimension: transactionId {label: "Transaction ID"}
-  dimension: productName {label: "Product Name"}
-  dimension: productCategory {label: "Product Category"}
-  dimension: productBrand {label: "Product Brand"}
-  dimension: productSku {label: "Product Sku"}
-  dimension: itemQuantity {label: "Item Quantity"}
-  dimension: itemRevenue {label: "Item Revenue"}
-  dimension: curencyCode {label: "Curency Code"}
-  dimension: localItemRevenue {label:"Local Item Revenue"}
+  dimension: transactionId {label: "Transaction ID" hidden: yes}
+  dimension: productName {label: "Product Name" hidden: yes}
+  dimension: productCategory {label: "Product Category" hidden: yes}
+  dimension: productBrand {label: "Product Brand" hidden: yes}
+  dimension: productSku {label: "Product Sku" hidden: yes}
+  dimension: itemQuantity {label: "Item Quantity" hidden: yes}
+  dimension: itemRevenue {label: "Item Revenue" hidden: yes}
+  dimension: curencyCode {label: "Curency Code" hidden: yes}
+  dimension: localItemRevenue {label:"Local Item Revenue" hidden: yes}
 
-  measure: product_count {
-    type: count_distinct
-    sql: ${productSku} ;;
-    drill_fields: [productName, productCategory, productSku, total_item_revenue]
-  }
+
 }
 
 view: hits_product_base {
   extension: required
+  view_label: "Product"
 
   dimension: id {
     primary_key: yes
@@ -619,11 +618,14 @@ view: hits_product_base {
     type: count_distinct
     sql: ${productSku} ;;
     drill_fields: [productName, productCategory, productSku, total_item_revenue]
+    description: "The number of unique SKUs in the database."
   }
+
 }
 
 view: hits_social_base {
   extension: required   ## THESE FIELDS WILL ONLY BE AVAILABLE IF VIEW "hits_social" IN GA CUSTOMIZE HAS THE "extends" parameter declared
+  view_label: "Social"
 
   dimension: socialInteractionNetwork {label: "Social Interaction Network"}
   dimension: socialInteractionAction {label: "Social Interaction Action"}
@@ -691,24 +693,25 @@ view: hits_publisher_base {
 
 view: hits_appInfo_base {
   extension: required
+  view_label: "App data"
 
-  dimension: name {}
-  dimension: version {}
-  dimension: id {}
-  dimension: installerId {}
-  dimension: appInstallerId {}
-  dimension: appName {}
-  dimension: appVersion {}
-  dimension: appId {}
-  dimension: screenName {}
-  dimension: landingScreenName {}
-  dimension: exitScreenName {}
-  dimension: screenDepth {}
+  dimension: name {hidden: yes}
+  dimension: version {hidden: yes}
+  dimension: id {hidden: yes}
+  dimension: installerId {hidden: yes}
+  dimension: appInstallerId {hidden: yes}
+  dimension: appName {hidden: yes}
+  dimension: appVersion {hidden: yes}
+  dimension: appId {hidden: yes}
+  dimension: screenName {hidden: yes}
+  dimension: landingScreenName {hidden: yes}
+  dimension: exitScreenName {hidden: yes}
+  dimension: screenDepth {hidden: yes}
 }
 
 view: contentInfo_base {
   extension: required
-  dimension: contentDescription {}
+  dimension: contentDescription {hidden: yes}
 }
 
 view: hits_customDimensions_base {
@@ -745,9 +748,9 @@ view: hits_eventInfo_base {
   extension: required
 
   dimension: eventCategory {label: "Event Category"}
-
   dimension: eventAction {label: "Event Action"}
   dimension: eventLabel {label: "Event Label"}
+
   #dimension: eventValue {label: "Event Category"}
   measure: total_events {
     type: number

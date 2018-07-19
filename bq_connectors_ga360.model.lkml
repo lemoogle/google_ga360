@@ -42,4 +42,6 @@ explore: ga_sessions {
 
 fiscal_month_offset: 8
 
-explore: user_facts {}
+explore: user_facts {label: "Customers"}
+
+explore: financial_calcs_extend {}

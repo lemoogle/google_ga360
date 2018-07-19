@@ -311,4 +311,18 @@ dimension: new_user_id {
     }
   }
 
+  measure: pdp_adds_to_basket_new {
+    type: number
+    sql: COUNT(CASE WHEN (hits_eventInfo.eventCategory LIKE '/productpage-addtobasket-pdp_UA' END) ;;
+  }
+
+  measure: test_event_counter {
+    case: {
+      when: {
+        sql:WHERE hits_eventInfo.eventCategory LIKE '/productpage-addtobasket-pdp_UA' ;;
+        label: "Basket adds"
+      }
+    }
+  }
+
 }
