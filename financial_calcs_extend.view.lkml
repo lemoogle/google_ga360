@@ -4,7 +4,8 @@ view: financial_calcs_extend {
 
   dimension: financial_week {
     type: string
-    sql: WHEN ${visitStart_date} BETWEEN '2014-08-04' AND '2014-08-10' THEN "FY15 Week 1"
+    sql: case
+    WHEN ${visitStart_date} BETWEEN '2014-08-04' AND '2014-08-10' THEN "FY15 Week 1"
 WHEN ${visitStart_date} BETWEEN '2014-08-11' AND '2014-08-17' THEN "FY15 Week 2"
 WHEN ${visitStart_date} BETWEEN '2014-08-18' AND '2014-08-24' THEN "FY15 Week 3"
 WHEN ${visitStart_date} BETWEEN '2014-08-25' AND '2014-08-31' THEN "FY15 Week 4"
