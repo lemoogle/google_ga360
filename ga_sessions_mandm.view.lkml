@@ -124,8 +124,6 @@ dimension: new_user_id {
   description: "Primary MandM user key, the GUID."
 }
 
-######### FINANCIAL YEAR #########
-
 ######## TEST PERAMETER #########
 
   parameter: show_me {
@@ -148,6 +146,24 @@ dimension: new_user_id {
     type: sum
     sql: ${TABLE}.{% parameter show_me %} ;;
     value_format_name: "usd"
+  }
+
+### EVENT BASED FIELDS
+
+  measure: pdp_adds_to_basket {
+    type: count
+    filters: {
+      field: hits_eventInfo.eventCategory
+      value: "/productpage-addtobasket-pdp_UA"
+    }
+  }
+
+  measure: plp_adds_to_basket {
+    type: count
+    filters: {
+      field: hits_eventInfo.eventCategory
+      value: "/productpage-addtobasket-plp_UA"
+    }
   }
 
 }
