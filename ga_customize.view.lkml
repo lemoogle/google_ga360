@@ -59,6 +59,7 @@ view: ga_sessions {
 
   dimension: partition_date {
     type: date_time
+    description: "The date and time of the visit"
     sql: TIMESTAMP(PARSE_DATE('%Y%m%d', REGEXP_EXTRACT(${tablesuffix},r'^\d\d\d\d\d\d\d\d')))  ;;
   }
 

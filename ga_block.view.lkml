@@ -117,12 +117,14 @@ view: ga_sessions_base {
 
   dimension: id {
     primary_key: yes
+    description: "The concatenation of FullvisitorId and VisitId. This is a completely unique ID"
 #    sql: CONCAT(CAST(${fullVisitorId} AS STRING), '|', COALESCE(CAST(${visitId} AS STRING),'')) ;;
     sql: CONCAT(CAST(${fullVisitorId} AS STRING), '|', COALESCE(CAST(${visitId} AS STRING),''), CAST(${partition_date} as STRING)) ;;
   }
 
 
-  dimension: visitorId {label: "Visitor ID"}
+  dimension: visitorId {label: "Visitor ID"
+    description: "The visitor ID (DO NOT USE). Use fullvsitorId instead"}
 
   dimension: visitnumber {
     label: "Visit Number"
@@ -132,28 +134,34 @@ view: ga_sessions_base {
 
   dimension:  first_time_visitor {
     type: yesno
+    description: "Was the user a first time visitor? Yes or No"
     sql: ${visitnumber} = 1 ;;
   }
 
   dimension: visitnumbertier {
     label: "Visit Number Tier"
+    description: "The session number for the user by tier. (1, 2, 5, 10, 15, 20, 50, 100)"
     type: tier
     tiers: [1,2,5,10,15,20,50,100]
     style: integer
     sql: ${visitnumber} ;;
   }
-  dimension: visitId {label: "Visit ID"}
-  dimension: fullVisitorId {label: "Full Visitor ID"}
+  dimension: visitId {label: "Visit ID"
+    description: "An identifier for a session. This is only unique to the user"}
+  dimension: fullVisitorId {label: "Full Visitor ID"
+    description: "The unique visitor ID"}
 
   dimension: visitStartSeconds {
     label: "Visit Start Seconds"
     type: date
+    description: "The time in seconds for the visit start time"
     sql: TIMESTAMP_SECONDS(${TABLE}.visitStarttime) ;;
     hidden: no
   }
   dimension_group: visitStart {
     timeframes: [date,day_of_week,fiscal_quarter,week,month,year,month_name,month_num,week_of_year,raw,time_of_day,hour_of_day]
     label: "Visit Start"
+    description: "The user's initial start date / time of their session"
     type: time
     sql: TIMESTAMP_SECONDS(${TABLE}.visitStarttime) ;;
   }
@@ -174,7 +182,7 @@ view: ga_sessions_base {
             THEN "last year's current week"
           ELSE null
           END
-    ;;
+    ;; description: "The current week to date vs the same week last year. Not broken down by dates"
   }
 
   dimension_group: visitStartweek {
@@ -188,7 +196,8 @@ view: ga_sessions_base {
   dimension: date {
     hidden: yes
   }
-  dimension: socialEngagementType {label: "Social Engagement Type"}
+  dimension: socialEngagementType {label: "Social Engagement Type"
+    description: "Is the user Socially Engaged or Not Socially Engaged"}
 
   measure: session_count {
     type: count
@@ -202,6 +211,7 @@ view: ga_sessions_base {
 
   measure: average_sessions_ver_visitor {
     type: number
+    description: "The average number of sessions per unique user"
     sql: ${session_count}/${unique_visitors}  ;;
     value_format_name: decimal_2
     drill_fields: [fullVisitorId, visitnumber, session_count, totals.hits, totals.page_views, totals.timeonsite]
@@ -214,6 +224,7 @@ view: ga_sessions_base {
 
   measure: first_time_visitors {
     label: "First Time Visitors"
+    description: "The count of all the first time visitors"
     type: count
     filters: {
       field: visitnumber
@@ -223,6 +234,7 @@ view: ga_sessions_base {
 
   measure: returning_visitors {
     label: "Returning Visitors"
+    description: "The number of returning visitors"
     type: count
     filters: {
       field: visitnumber
@@ -230,7 +242,8 @@ view: ga_sessions_base {
     }
   }
 
-  dimension: channelGrouping {label: "Channel Grouping"}
+  dimension: channelGrouping {label: "Channel Grouping"
+    description: "The default channel grouping google analytics categorises acquisitions"}
 
   # subrecords
   dimension: geoNetwork {hidden: yes}
@@ -259,13 +272,16 @@ view: geoNetwork_base {
   }
   dimension: region {
     drill_fields: [metro,city,approximate_networkLocation,networkLocation]
+    description: "The region from which sessions originate, derived from the users IP address (often a county or state)"
   }
   dimension: metro {
     drill_fields: [city,approximate_networkLocation,networkLocation]
+    description: "The designated market area from which sessions originate"
   }
   dimension: city {drill_fields: [metro,approximate_networkLocation,networkLocation]}
   dimension: cityid { label: "City ID"}
-  dimension: networkDomain {label: "Network Domain"}
+  dimension: networkDomain {label: "Network Domain"
+    description: "The domain name of the users ISP, derived from the domain name registered to the ISP's IP address"}
   dimension: latitude {
     type: number
     hidden: yes
@@ -276,9 +292,11 @@ view: geoNetwork_base {
     hidden: yes
     sql: CAST(${TABLE}.longitude as FLOAT64);;
   }
-  dimension: networkLocation {label: "Network Location"}
+  dimension: networkLocation {label: "Network Location"
+    description: "The names of the service providers used to reach the property"}
   dimension: location {
     type: location
+    description: "The exact location of the user based on the IP address using latitude and longitude"
     sql_latitude: ${latitude} ;;
     sql_longitude: ${longitude} ;;
   }
@@ -304,11 +322,13 @@ view: totals_base {
   }
   measure: hits_total {
     type: sum
+    description: "The total number of hits"
     sql: ${TABLE}.hits ;;
     drill_fields: [hits.detail*]
   }
   measure: hits_average_per_session {
     type: number
+    description: "The average total hits per session"
     sql: 1.0 * ${hits_total} / NULLIF(${ga_sessions.session_count},0) ;;
     value_format_name: decimal_2
   }
@@ -324,6 +344,7 @@ view: totals_base {
   }
   dimension: timeonsite_tier {
     label: "Time On Site Tier"
+    description: "The total time on screen per session by tier (0, 15, 30, 60, 90, 120, 180, 240, 300, 600) in seconds"
     type: tier
     sql: ${TABLE}.timeonsite ;;
     tiers: [0,15,30,60,90,120,180,240,300,600]
@@ -331,6 +352,7 @@ view: totals_base {
   }
   measure: timeonsite_average_per_session {
     label: "Time On Site Average Per Session"
+    description: "The average time on site per session"
     type: number
     sql: 1.0 * ${timeonsite_total} / NULLIF(${ga_sessions.session_count},0) ;;
     value_format_name: decimal_2
@@ -338,6 +360,7 @@ view: totals_base {
 
   measure: page_views_session {
     label: "PageViews Per Session"
+    description: "The average number of page views per session"
     type: number
     sql: 1.0 * ${pageviews_total} / NULLIF(${ga_sessions.session_count},0) ;;
     value_format_name: decimal_2
@@ -345,10 +368,12 @@ view: totals_base {
 
   measure: bounces_total {
     type: sum
+    description: "The total number of bounces"
     sql: ${TABLE}.bounces ;;
   }
   measure: bounce_rate {
     type:  number
+    description: "The total number of bounces / the total number of sessions (%)"
     sql: 1.0 * ${bounces_total} / NULLIF(${ga_sessions.session_count},0) ;;
     value_format_name: percent_2
   }
@@ -371,7 +396,8 @@ view: totals_base {
   measure: AOV {
     label: "Average order value"
     type: average
-    sql: (${TABLE}.transactionRevenue/1000000) ;;
+    description: "The average order value (using Google Analytics Revenue figure)"
+    sql: ((${TABLE}.transactionRevenue/1000000)/${TABLE}.transactions) ;;
     value_format_name: gbp
   }
   measure: newVisits_total {
@@ -396,6 +422,7 @@ view: totals_base {
   }
   dimension: timeOnScreen_total_unique{
     label: "Time On Screen Total"
+    description: "The total time on screen per session in seconds"
     type: number
     sql: ${TABLE}.timeOnScreen ;;
   }
@@ -456,19 +483,27 @@ view: device_base {
   dimension: browserVersion {label:"Browser Version"}
   dimension: operatingSystem {label: "Operating System"}
   dimension: operatingSystemVersion {label: "Operating System Version"}
-  dimension: isMobile {label: "Is Mobile"}
-  dimension: flashVersion {label: "Flash Version"}
+  dimension: isMobile {label: "Is Mobile"
+    description:"If the user is on a mobile device, this value is true, otherwise false"}
+  dimension: flashVersion {label: "Flash Version"
+    description: "The version of the Adobe Flash plugin being used"}
   dimension: javaEnabled {
     label: "Java Enabled"
     type: yesno
   }
-  dimension: language {}
-  dimension: screenColors {label: "Screen Colors"}
-  dimension: screenResolution {label: "Screen Resolution"}
-  dimension: mobileDeviceBranding {label: "Mobile Device Branding"}
+  dimension: language {
+    description: "The language of the device (ITEF language code)"
+  }
+  dimension: screenColors {label: "Screen Colors"
+    description: "The number of colours supported by the display expressed as the bit depth"}
+  dimension: screenResolution {label: "Screen Resolution"
+    description: "The resolution of the device's screen in pixel width and height"}
+  dimension: mobileDeviceBranding {label: "Mobile Device Branding"
+    description:"The brand or manufacturer of the device"}
   dimension: devicecategory {label: "Device Category"
     suggestions: ["mobile","desktop","tablet"]}
-  dimension: mobileDeviceInfo {label: "Mobile Device Info"}
+  dimension: mobileDeviceInfo {label: "Mobile Device Info"
+    description: "The branding, model and marketing name used to identify the mobile device"}
   dimension: mobileDeviceMarketingName {label: "Mobile Device Marketing Name"}
   dimension: mobileDeviceModel {label: "Mobile Device Model"}
   dimension: mobileDeviceInputSelector {label: "Mobile Device Input Selector"}
@@ -537,6 +572,7 @@ view: hits_page_base {
   extension: required
   dimension: pagePath {
     label: "Page Path"
+    description: "The URL of the page"
     link: {
       label: "Link"
       url: "{{ value }}"
@@ -547,10 +583,13 @@ view: hits_page_base {
       icon_url: "http://www.looker.com/favicon.ico"
     }
   }
-  dimension: hostName {label: "Host Name"}
+  dimension: hostName {label: "Host Name"
+    description: "The hostname of the URL"}
   dimension: pageTitle {label: "Page Title"}
-  dimension: searchKeyword {label: "Search Keyword"}
-  dimension: searchCategory{label: "Search Category"}
+  dimension: searchKeyword {label: "Search Keyword"
+    description: "The Keyword of the traffic source. E.g. Organic or cpc"}
+  dimension: searchCategory{label: "Search Category"
+    description: "If the result is a search-results page, this is the category selected"}
 }
 
 view: hits_transaction_base {

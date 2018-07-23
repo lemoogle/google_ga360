@@ -11,6 +11,7 @@ view: ga_sessions_mandm {
 
   measure: lastvisit {
     label: "Last Visit"
+    description: "The most recent session"
     type: max
     sql: ${visitStart_raw} ;;
   }
@@ -25,12 +26,14 @@ view: ga_sessions_mandm {
   }
   measure: conversion_rate {
     type: number
+    description: "The % of sessions with a transaction"
     value_format: "0.00%"
     sql: ${totals.transactions_count}/NULLIF(${totals.visits_total},0);;
   }
 
   dimension: checkout_stage {
     type: string
+    description: "Customers that view the checkout. Starting from the Sign In page until the Order Confirmation Page. Started, Completed or Null"
     sql: CASE WHEN ${hits_eventInfo.eventAction} LIKE "1_Sign In" THEN "Started"
     WHEN ${hits_eventInfo.eventAction} LIKE "%_Order Confirmation" THEN "Completed" END;;
   }
@@ -71,26 +74,31 @@ view: ga_sessions_mandm {
 
 dimension: has_transaction {
   type: yesno
+  description: "Has the user transacted?"
   sql: ${totals.transactions}>0 ;;
 }
 
 dimension: days_since_firstvisit {
   type: number
+  description: "The number of days since the user had their first visit"
   sql: DATE_DIFF(${visitStart_date},${user_facts.first_visit_date},DAY) ;;
 }
 
 dimension: months_since_firstvisit {
   type: number
+  description: "The number of months since the user's first visit"
   sql: DATE_DIFF(${visitStart_date},${user_facts.first_visit_date},MONTH) ;;
 }
 
 dimension: days_since_firstpurchase {
   type: number
+  description: "The number of days since the user made their first purchase"
   sql: DATE_DIFF(${visitStart_date},${user_facts.first_visit_date},DAY) ;;
 }
 
 dimension: months_since_firstpurchase {
   type: number
+  description: "The number of months since the user's first purchase"
   sql: DATE_DIFF(${visitStart_date},${user_facts.first_visit_date},MONTH) ;;
 }
 
@@ -105,13 +113,14 @@ measure: total_identified_sessions {
 
 dimension: is_identified {
   type: yesno
+  description: "Is the User Returning or New? Yes for Returning, No for New"
   sql: ${new_user_id} IS NOT NULL and ${new_user_id}<>'undefined' and ${new_user_id}<>'true' ;;
 }
 
   dimension: UK_master_channel_group{
     label: "Master Channel Grouping"
     type: string
-    description: "MandM master channel grouping."
+    description: "MandM master channel grouping used to identify the acquisition of the user."
     sql: CASE
 # Affiliates
     WHEN ( ${channelGrouping} LIKE "Affiliates" or (${trafficSource.source} like "hotukdeals.com" and ${trafficSource.medium} like "referral")
@@ -257,6 +266,7 @@ dimension: is_identified {
 
 measure: identification_rate {
   type: number
+  description: "The average number of identified sessions as a % of sessions"
   value_format_name: percent_1
   sql: 1.0*${total_identified_sessions}/${session_count} ;;
 }
